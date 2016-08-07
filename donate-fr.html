@@ -2,13 +2,13 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>Make a donation &mdash; S.lexis Works</title>
+	<title>Faire un don &mdash; S.lexis Works</title>
 	
 	<link rel="stylesheet" type="text/css" href="style.css" />
 
 	<script>
 		window.onload = function() {
-			var vowels = "aeiou";
+			var vowels = "aéiou";
 			var laugh = "",
 				newPhrase = true,
 				lastVowel = vowels[Math.floor(Math.random()*5)],
@@ -28,7 +28,7 @@
 						newPhrase = true;
 						break;
 					case 1:
-						laugh += "! ";
+						laugh += " ! ";
 						newPhrase = true;
 						break;
 					default:
@@ -36,25 +36,25 @@
 							if (Math.round(Math.random))
 								laugh += ". ";
 							else
-								laugh += "! ";
+								laugh += " ! ";
 						} else if (Math.random() < 0.3) {
 							laugh += " ";
 						}
 				}
 			}
-			document.getElementById("laughs").textContent = laugh + "You really want to gift me for these shits?";
+			document.getElementById("laughs").textContent = laugh + "Vous voulez vraiment me récompenser pour ces merdes ?";
 		}
 	</script>
 </head>
 <body>
 	<header>
-		<h1>Welcome to my GitHub's website!</h1>
+		<h1>Bienvenue sur le site de mon GitHub !</h1>
 		<nav>
-			<a href="index.html">Index</a>
-			<a href="contribs.html">Contributions</a>
-			<a href="donate.html">Donate</a>
+			<a href="index-fr.html">Index</a>
+			<a href="contribs-fr.html">Contributions</a>
+			<a href="donate-fr.html">Faire un don</a>
 			
-			<a href="donate-fr.html"><img src="images/fr-flag.gif" /> Français</a>
+			<a href="donate.html"><img src="images/en-flag.gif" /> English</a>
 		</nav>
 	</header>
 	<main>
