@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Make a donation &mdash; S.lexis Works</title>
+	
+	<link rel="stylesheet" type="text/css" href="style.css" />
+
+	<script>
+		window.onload = function() {
+			var vowels = "aeiou";
+			var laugh = "",
+				newPhrase = true,
+				lastVowel = vowels[Math.floor(Math.random()*5)],
+				laughDuration = Math.floor(Math.random()*200) + 300;
+				for (var i=0 ; i<laughDuration ; i++) {
+					if (newPhrase) {
+						laugh += "H";
+						newPhrase = false;
+					} else
+						laugh += "h";
+					if (Math.random() < 0.6)
+						lastVowel = vowels[Math.floor(Math.random()*5)];
+					laugh += lastVowel;
+					switch (Math.floor(Math.random()*4)) {
+						case 0:
+							laugh += ".";
+							newPhrase = true;
+							break;
+						case 1:
+							laugh += "!";
+							newPhrase = true;
+							break;
+					}
+					laugh += " ";
+				}
+			document.getElementById("laughs").textContent = laugh + "You really want to gift me for these shits?";
+		}
+	</script>
+</head>
+<body>
+	<header>
+		<h1>Welcome to my GitHub's website!</h1>
+		<nav>
+			<a href="index.html">Index</a>
+			<a href="contribs.html">Contributions</a>
+			<a href="donate.html">Donate</a>
+			
+			<a href="index-fr.html"><img src="images/fr-flag.gif" /> Français</a>
+		</nav>
+	</header>
+	<main>
+		<h2>Make a donation</h2>
+		<p id="laughs"></p>
+	</main>
+	<footer>
+		&copy; S.lexis Works &mdash; I forgot when~2016
+	</footer>
+</body>
+</html>
