@@ -1,0 +1,15 @@
+article.contrib {
+		border: 3pt solid black;
+		border-radius: 10pt;
+		
+		margin: 4pt 10pt 4pt;
+		padding: 8pt 20pt;
+}
+
+article.contrib a:first-child {
+		display: block;
+		color: #44F;
+		text-shadow: 0 0 1pt grey;
+		font-size: 1.2em;
+		text-decoration: none;
+}

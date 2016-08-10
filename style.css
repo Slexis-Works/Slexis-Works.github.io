@@ -90,6 +90,12 @@ p {
 	text-align: justify;
 }
 
+a[hreflang]::before {
+		content: "[" attr(hreflang) "] ";
+		text-decoration: none !important;
+		color: #114;
+}
+
 
 /*
  * Special classes
