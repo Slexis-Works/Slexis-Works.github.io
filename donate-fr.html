@@ -5,9 +5,17 @@
 	<title>Faire un don &mdash; S.lexis Works</title>
 	
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	
+	<script src="http://fayedu39.1s.fr/VoK/VoK.js"></script>
+	<script>
+		var VoKparams={
+			"audioBaseURL":"http://fayedu39.1s.fr/VoK/audios"
+		};
+	</script>
 
 	<script>
 		window.onload = function() {
+			VoK.init();
 			var vowels = "aéiou";
 			var laugh = "",
 				newPhrase = true,
@@ -62,6 +70,7 @@
 	<main>
 		<h2>Faire un don</h2>
 		<p id="laughs"></p>
+		<div style="text-align: center;margin-top: 1em;"><button style="font-size: 180%;padding: 2pt;border-radius: 5pt;border-color: #bbe;background-color: white;" onclick="VoK.say(document.getElementById('laughs').innerText);">JE SAIS PAS LIRE</button></div>
 	</main>
 	<footer>
 		&copy; S.lexis Works &mdash; J'ai oublié quand~2016
