@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Tap the colors &mdash; S.lexis Works</title>
+
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link rel="stylesheet" type="text/css" href="contribs.css" />
+
+	<!--<link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">-->
+	<link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" href="tap-the-colors.css" />
+
+	<script src="tap-the-colors.js"></script>
+</head>
+<body>
+	<header>
+		<h1>Welcome to my GitHub's website!</h1>
+		<nav>
+			<a href="index.html">Index</a>
+			<a href="projects.html">Projects</a>
+			<a href="contribs.html">Contributions</a>
+			<a href="donate.html">Donate</a>
+			<a href="https://github.com/Slexis-Works">Repository</a>
+
+			<a href="tap-the-colors-fr.html"><img src="images/fr-flag.gif" /> Français</a>
+		</nav>
+	</header>
+	<main>
+		<h2>Tap the colors game</h2>
+
+		<p>Rules: the goal of this game is to hit properly as many notes as possible. They'll appear from the left and slip to the right. Try to press the proper key when the black line is over the colored circle. The closer to the center of the circle you are, the more points you'll get. If you don't press the key in time or press the wrong key, you'll lose some life. Everytime a new color is appended, the key to press will be displayed on the circle and on the bottom right box.</p>
+
+		<div id="ttc-game">
+			<input id="inNbColors" type="number" min="1" max="7" step="1" value="3" style="width: 2ex;" />
+			<span id="colors-icon"></span>
+
+			Speed: 
+			<input id="inSpeed" type="number" min="1" max="20" step="0.1" value="4.0" style="width: 5ex;" />
+		</div>
+		<div id="ttc-infos">
+			<div id="ttc-score">Start the game:</div>
+			<div id="ttc-new-key" onclick="initGame();">&gt;</div>
+		</div>
+	</main>
+</body>
+</html>
