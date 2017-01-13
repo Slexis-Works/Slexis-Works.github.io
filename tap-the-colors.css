@@ -34,7 +34,7 @@
 	display: inline-block;
 	width: 0.7em;
 	height: 0.7em;
-	margin-right: 1em;
+	margin-right: 0.8em;
 	border-radius: 0.1em;
 	background: linear-gradient(left top, red 0%, green 50%, blue 100%);
 	background: -webkit-linear-gradient(left top, darkred 0%, red 20%, lime 50%, blue 80%, purple 100%);
