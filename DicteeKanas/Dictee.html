@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf8" />
+	<title>Dictée de kanas</title>
+
+	<style>
+		*{margin: 0; padding: 0;}
+
+		#rappels {
+			padding: 0.7em;
+			max-height: 1em;
+			border-bottom: 2px solid black;
+			overflow: hidden;
+
+			font-size: 15pt;
+		}
+		#rappels:hover {
+			margin: 0 0.6em;
+			padding: 0.7em 0.1em 0;
+			max-height: none;
+			border-left: 2px solid black;
+			border-right: 2px solid black;
+		}
+
+		#rappels div {
+			margin: 0.4em;
+			padding: 0.4em;
+			border: 1px solid black;
+			float: left;
+
+			font-size: 30pt;
+		}
+
+		#main section {
+			padding: 0.4em;
+
+			font-size: 25pt;
+			text-align: center;
+		}
+
+		#main h2 {
+			margin: 0 3em;
+			border-bottom: 1px solid black;
+
+			font-size: 0.8em;
+		}
+
+		#options input {
+			height: 1em;
+			font-size: 0.9em;
+			margin-left: 1em;
+			transition: transform 0.3s ease-in-out;
+		}
+
+		#options input:checked {
+			transform: scale(1.4, 1.4) rotate(10deg);
+		}
+
+		#progres.cliquable {
+			margin: 0.2em 2em;
+			padding: 0.5em;
+			background-color: #88D;
+			border-radius: 0.3em;
+			border: 2px outset #AAE;
+		}
+		#progres.cliquable:hover {
+			border-style: inset;
+		}
+	</style>
+	<script>
+		var romajis = [
+			'a', 'ba', 'be', 'bi', 'bo', 'bu', 'bya', 'byo', 'byu', 'cha',
+			'chi', 'cho', 'chu', 'da', 'de', 'do', 'dzu', 'e', 'ga',
+			'ge', 'gi', 'go', 'gu', 'gya', 'gyo', 'gyu', 'ha', 'he', 'hi',
+			'ho', 'hu', 'hya', 'hyo', 'hyu', 'i', 'ja', 'ji', 'jo', 'ju',
+			'ka', 'ke', 'ki', 'ko', 'ku', 'kya', 'kyo', 'kyu', 'ma', 'me',
+			'mi', 'mo', 'mu', 'mya', 'myo', 'myu', 'na', 'ne', 'ni', 'n',
+			'no', 'nu', 'nya', 'nyo', 'nyu', 'o', 'pa', 'pe', 'pi', 'po',
+			'pu', 'pya', 'pyo', 'pyu', 'ra', 're', 'ri', 'ro', 'ru', 'rya',
+			'ryo', 'ryu', 'sa', 'se', 'sha', 'shi', 'sho', 'shu', 'so', 'su',
+			'ta', 'te', 'to', 'tsu', 'u', 'wa', 'wo', 'ya', 'yo', 'yu',
+			'za', 'ze', 'zo', 'zu'];
+		var categs = [
+			// a...
+			0, 1, 1, 1, 1, 1, 4, 4, 4, 3,
+			0, 3, 3, 1, 1, 1, 1, 0, 1,
+			1, 1, 1, 1, 4, 4, 4, 0, 0, 0,
+			0, 0, 3, 3, 3, 0, 4, 1, 4, 4,
+			// ka...
+			0, 0, 0, 0, 0, 3, 3, 3, 0, 0,
+			0, 0, 0, 3, 3, 3, 0, 0, 0, 0,
+			0, 0, 3, 3, 3, 0, 2, 2, 2, 2,
+			2, 5, 5, 5, 0, 0, 0, 0, 0, 3,
+			// ryo...
+			3, 3, 0, 0, 3, 0, 3, 3, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			1, 1, 1, 1
+		];
+		var categNames = [
+			'Basiques',
+			'Dakutens',
+			'Handakutens',
+			'Composés basiques',
+			'Composés avec dakutens',
+			'Composés avec handakutens',
+			'Katakanas extras' // dzi par exemple
+		];
+
+		var hiras = ['あ', 'ば', 'べ', 'び', 'ぼ', 'ぶ', 'びゃ', 'びょ', 'びゅ', 'ちゃ', 'ち', 'ちょ', 'ちゅ', 'だ', 'で', 'ど', 'づ', 'え', 'が', 'げ', 'ぎ', 'ご', 'ぐ', 'ぎゃ', 'ぎょ', 'ぎゅ', 'は', 'へ', 'ひ', 'ほ', 'ふ', 'ひゃ', 'ひょ', 'ひゅ', 'い', 'じゃ', 'じ', 'じょ', 'じゅ', 'か', 'け', 'き', 'こ', 'く', 'きゃ', 'きょ', 'きゅ', 'ま', 'め', 'み', 'も', 'む', 'みゃ', 'みょ', 'みゅ', 'な', 'ね', 'に', 'ん', 'の', 'ぬ', 'にゃ', 'にょ', 'にゅ', 'お', 'ぱ', 'ぺ', 'ぴ', 'ぽ', 'ぷ', 'ぴゃ', 'ぴょ', 'ぴゅ', 'ら', 'れ', 'り', 'ろ', 'る', 'りゃ', 'りょ', 'りゅ', 'さ', 'せ', 'しゃ', 'し', 'しょ', 'しゅ', 'そ', 'す', 'た', 'て', 'と', 'つ', 'う', 'わ', 'を', 'や', 'よ', 'ゆ', 'ざ', 'ぜ', 'ぞ', 'ず'];
+		var katas = ['ア', 'バ', 'ベ', 'ビ', 'ボ', 'ブ', 'ビャ', 'ビョ', 'ビュ', 'チャ', 'チ', 'チョ', 'チュ', 'ダ', 'デ', 'ド', 'ヅ', 'エ', 'ガ', 'ゲ', 'ギ', 'ゴ', 'グ', 'ギャ', 'ギョ', 'ギュ', 'ハ', 'ヘ', 'ヒ', 'ホ', 'フ', 'ヒャ', 'ヒョ', 'ヒュ', 'イ', 'ジャ', 'ジ', 'ジョ', 'ジュ', 'カ', 'ケ', 'キ', 'コ', 'ク', 'キャ', 'キョ', 'キュ', 'マ', 'メ', 'ミ', 'モ', 'ム', 'ミャ', 'ミョ', 'ミュ', 'ナ', 'ネ', 'ニ', 'ン', 'ノ', 'ヌ', 'ニャ', 'ニョ', 'ニュ', 'オ', 'パ', 'ペ', 'ピ', 'ポ', 'プ', 'ピャ', 'ピョ', 'ピュ', 'ラ', 'レ', 'リ', 'ロ', 'ル', 'リャ', 'リョ', 'リュ', 'サ', 'セ', 'シャ', 'シ', 'ショ', 'シュ', 'ソ', 'ス', 'タ', 'テ', 'ト', 'ツ', 'ウ', 'ワ', 'ヲ', 'ヤ', 'ヨ', 'ユ', 'ザ', 'ゼ', 'ゾ', 'ズ'];
+
+
+		var loaded = 0;
+
+		function loadedSound() {
+			if (loaded == -1) // L'event est parfois relancé lorsqu'on joue un son
+				return;
+			loaded++;
+			if (loaded == romajis.length) {
+				document.getElementById("progres").innerText = "Démarrer la dictée !";
+				document.getElementById("progres").className = "cliquable";
+				document.getElementById("progres").onclick = launchDictee;
+				loaded = -1;
+			} else
+				document.getElementById("progres").innerText = "Chargement des sons : " + loaded + "/" + romajis.length;
+		}
+
+		window.onload = function() {
+			for (var i=0 ; i<6 ; ++i) {
+				var nDiv = document.createElement("div");
+				nDiv.innerHTML = categNames[i] + " :<br/>";
+				for (var n=0 ; n<romajis.length ; n++) {
+					if (categs[n] == i) {
+						nDiv.innerHTML += '<span onclick="document.getElementById(\'son-' + romajis[n] + '\').play();">' + hiras[n] + " / " + katas[n] + " : " + romajis[n] + "</span><br/>";
+					}
+				}
+				console.log(nDiv);
+				document.getElementById("rappels").appendChild(nDiv);
+			}
+
+			for (var n=0 ; n<romajis.length ; n++) {
+				var nSon = document.createElement("audio");
+				nSon.id = "son-" + romajis[n];
+				nSon.oncanplaythrough = loadedSound;
+				nSon.src = romajis[n] + ".mp3";
+				document.body.appendChild(nSon);
+			}
+		}
+
+		function launchDictee() {
+			var type, duree;
+			if (document.getElementById('type-duree-random').checked) {
+				type = "random";
+				duree = parseInt(document.getElementById('opt-nb-kanas').value);
+			} else if (document.getElementById('type-duree-passes').checked) {
+				type = "passes";
+				duree = parseInt(document.getElementById('opt-nb-passes').value);
+			} else {
+				alert("Heu bravo vous avez tout cassé !");
+				return;
+			}
+
+			var tpsEntre = parseInt(document.getElementById('opt-tps-entre').value);
+
+			if (document.getElementById('type-dictee-lecture').checked) {
+				if (tpsEntre < 1500)
+					return alert("Le temps entre deux kanas doit être d'au moins 1 500 !");
+				var wantedKanas = [], wantedRomajis = [], wantedCategs = [];
+				for (var i=0 ; i<6 ; ++i) {
+					if (document.getElementById('categ-hira-' + i).checked)
+						wantedCategs.push(i);
+				}
+				if (wantedCategs.length) {
+					for (var n=0 ; n<romajis.length ; ++n) {
+						if (wantedCategs.indexOf(categs[n]) > -1) {
+							wantedKanas.push(hiras[n]);
+							wantedRomajis.push(romajis[n]);
+						}
+					}
+				}
+				wantedCategs = [];
+				for (var i=0 ; i<6 ; ++i) {
+					if (document.getElementById('categ-kata-' + i).checked)
+						wantedCategs.push(i);
+				}
+				if (wantedCategs.length) {
+					for (var n=0 ; n<romajis.length ; ++n) {
+						if (wantedCategs.indexOf(categs[n]) > -1) {
+							wantedKanas.push(katas[n]);
+							wantedRomajis.push(romajis[n]);
+						}
+					}
+				}
+				console.log(wantedKanas);
+				console.log(wantedRomajis);
+				var list = [], sounds = [];
+				if (type == "random") {
+					var newRom, lastRom = null;
+					for (var i=0 ; i<duree ; i++) {
+						do {
+							newRom = Math.floor(Math.random()*wantedRomajis.length);
+						} while (newRom === lastRom && i<duree-1);
+
+						sounds.push(wantedRomajis[newRom]);
+						list.push(wantedKanas[newRom]);
+						lastRom = newRom;
+					}
+				} else if (type == "passes") {
+					var passes = duree;
+					duree *= wantedKanas.length;
+					sounds = Array(duree);
+					list = Array(duree);
+					for (var i=0 ; i<passes ; i++) {
+						for (var k=0 ; k<wantedKanas.length ; k++) {
+							var place;
+							do {
+								place = Math.floor(Math.random()*duree);
+							} while (list[place] !== undefined);
+							sounds[place] = wantedRomajis[k];
+							list[place] = wantedKanas[k];
+						}
+					}
+				}
+				console.log("Liste ; Romajis :");
+				console.log(list);
+				console.log(sounds);
+
+				// Début lecture
+
+				document.getElementById('options').style.display = 'none';
+				document.getElementById('reponses').innerHTML = '<h2>Lecture de kanas</h2><div>' + duree + ' kanas ' + (type == "random"?"aléatoires":"en parts égales") + '.</div><div id="champ-lecture" style="font-size: 40pt;">?</div>';
+				document.getElementById('reponses').style.display = 'block';
+				document.getElementById('progres').className = "";
+				document.getElementById('progres').innerText = "Démarrage en cours…";
+				document.getElementById("progres").onclick = null;
+
+				var currentKana = 0;
+				var dicteeInt = setInterval(function() {
+					setTimeout(function() {
+						document.getElementById('son-' + sounds[currentKana-1]).play();
+					}, tpsEntre - 1000);
+					document.getElementById('champ-lecture').innerText = list[currentKana];
+					currentKana++;
+					document.getElementById('progres').innerText = "Lecture du kana " + currentKana + "/" + duree;
+					if (currentKana == duree) {
+						clearInterval(dicteeInt);
+						setTimeout(function() {
+							document.getElementById('champ-lecture').innerText = "Terminé !";
+							document.getElementById('reponses').innerHTML += "<div>Rappel de la dictée, dans l'ordre :</div><div>" + list.join('&nbsp;&nbsp;') + '</div>';
+							document.getElementById('progres').innerText = "Refaire une lecture";
+							document.getElementById('options').style.display = 'block';
+							document.getElementById('progres').className = 'cliquable';
+							document.getElementById('progres').onclick = launchDictee;
+							document.getElementById("son-ya").play();
+							setTimeout(function() {
+								document.getElementById("son-me").play();
+								setTimeout(function() {
+									document.getElementById("son-ru").play();
+								}, 260);
+							}, 280);
+						}, 4000);
+					}
+				}, tpsEntre);
+			} else {
+				var answers = [], sounds = [];
+				var source;
+				if (document.getElementById('type-dictee-ecriture-hiras').checked)
+					source = hiras;
+				else if (document.getElementById('type-dictee-ecriture-katas').checked)
+					source = katas;
+				else
+					return alert("Vous venez de créer une faille, braval.");
+
+				var wantedKanas = [], wantedSounds = [], wantedCategs = [];
+				for (var i=0 ; i<6 ; ++i) {
+					console.log(i + " " + document.getElementById('categ-kana-' + i).checked);
+					if (document.getElementById('categ-kana-' + i).checked)
+						wantedCategs.push(i);
+				}
+				console.log(wantedCategs);
+				if (wantedCategs.length) {
+					for (var n=0 ; n<romajis.length ; ++n) {
+						if (wantedCategs.indexOf(categs[n]) > -1) {
+							wantedKanas.push(source[n]);
+							wantedSounds.push(romajis[n]);
+						}
+					}
+					console.log(wantedKanas);
+					console.log(wantedSounds);
+				} else
+					return alert("Veuillez cocher au moins une catégorie.");
+
+				if (type == "random") {
+					var newRom, lastRom = null;
+					for (var i=0 ; i<duree ; i++) {
+						do {
+							newRom = Math.floor(Math.random()*wantedKanas.length);
+						} while (newRom === lastRom && i<duree-1);
+
+						sounds.push(wantedSounds[newRom]);
+						answers.push(wantedKanas[newRom]);
+						lastRom = newRom;
+					}
+				} else if (type == "passes") {
+					var passes = duree;
+					duree*=wantedKanas.length;
+					sounds = Array(duree);
+					answers = Array(duree);
+					for (var i=0 ; i<passes ; i++) {
+						for (var k=0 ; k<wantedKanas.length ; k++) {
+							var place;
+							do {
+								place = Math.floor(Math.random()*duree);
+							} while (sounds[place] !== undefined);
+							sounds[place] = wantedSounds[k];
+							answers[place] = wantedKanas[k];
+						}
+					}
+				}
+
+				document.getElementById('options').style.display = 'none';
+				document.getElementById('reponses').innerHTML = '<h2>Dictée d' + (source == hiras?"'hiraganas":"e katakanas") + '</h2><div>' + duree + ' ' + (source == hiras?"hiraganas":"katakanas") + ' ' + (type == "random"?"aléatoires":"en parts égales") + '.</div>';
+				document.getElementById('reponses').style.display = 'block';
+				document.getElementById('progres').className = "";
+				document.getElementById('progres').innerText = "Démarrage en cours…";
+				document.getElementById("progres").onclick = null;
+
+				console.log(sounds);
+				console.log(answers);
+
+
+				var currentKana = 0;
+				var dicteeInt = setInterval(function() {
+					document.getElementById('son-' + sounds[currentKana]).play();
+					currentKana++;
+					document.getElementById('progres').innerText = "Lecture du son " + currentKana + "/" + duree;
+					if (currentKana == duree) {
+						clearInterval(dicteeInt);
+						setTimeout(function() {
+							document.getElementById('reponses').innerHTML += "<div>Réponses, dans l'ordre :</div><div>" + answers.join('&nbsp;&nbsp;') + '</div>';
+							document.getElementById('progres').innerText = "Refaire une dictée";
+							document.getElementById('options').style.display = 'block';
+							document.getElementById('progres').className = 'cliquable';
+							document.getElementById('progres').onclick = launchDictee;
+							document.getElementById("son-ya").play();
+							setTimeout(function() {
+								document.getElementById("son-me").play();
+								setTimeout(function() {
+									document.getElementById("son-ru").play();
+								}, 260);
+							}, 280);
+						}, 4000);
+					}
+				}, tpsEntre);
+			}
+
+		}
+
+
+	</script>
+</head>
+<body>
+	<article id="rappels">Listes utilisées. Ordre alphabétique français. Cliquez sur une ligne pour l'écouter.<br/></article>
+	<article id="main">
+		<section id="reponses"></section>
+		<section id="options">
+			<h2>Options</h2>
+
+			Type de la dictée :
+			<br/>
+			<input type="radio" name="type-dictee" id="type-dictee-ecriture-hiras" checked onchange="document.getElementById('categs-kana-ecriture').style.display='block';document.getElementById('categs-kana-lecture').style.display='none';"/><label for="type-dictee-ecriture-hiras"> Écriture d'hiraganas</label>
+			<input type="radio" name="type-dictee" id="type-dictee-ecriture-katas" onchange="document.getElementById('categs-kana-ecriture').style.display='block';document.getElementById('categs-kana-lecture').style.display='none';"/><label for="type-dictee-ecriture-katas"> Écriture de katakanas</label>
+			<input type="radio" name="type-dictee" id="type-dictee-lecture" onchange="document.getElementById('categs-kana-ecriture').style.display='none';document.getElementById('categs-kana-lecture').style.display='block';"/><label for="type-dictee-lecture"> Lecture de kanas</label>
+
+			<div id="categs-kana-ecriture">
+				Catégories disponibles pour les kanas :
+				<div id="opt-categs-kana">
+					<input type="checkbox" id="categ-kana-0" checked /><label for="categ-kana-0"> Basiques</label>
+					<input type="checkbox" id="categ-kana-1" checked /><label for="categ-kana-1"> Dakutens</label>
+					<input type="checkbox" id="categ-kana-2" checked /><label for="categ-kana-2"> Handakutens</label><br/>
+					<input type="checkbox" id="categ-kana-3" checked /><label for="categ-kana-3"> Composés</label>
+					<input type="checkbox" id="categ-kana-4" /><label for="categ-kana-4"> Comp. dak.</label>
+					<input type="checkbox" id="categ-kana-5" /><label for="categ-kana-5"> Comp. hand.</label>
+				</div>
+			</div>
+
+			<div id="categs-kana-lecture" style="display:none;">
+				Catégories disponibles pour les hiraganas :
+				<div id="opt-categs-hira">
+					<input type="checkbox" id="categ-hira-0" checked /><label for="categ-hira-0"> Basiques</label>
+					<input type="checkbox" id="categ-hira-1" checked /><label for="categ-hira-1"> Dakutens</label>
+					<input type="checkbox" id="categ-hira-2" checked /><label for="categ-hira-2"> Handakutens</label><br/>
+					<input type="checkbox" id="categ-hira-3" checked /><label for="categ-hira-3"> Composés</label>
+					<input type="checkbox" id="categ-hira-4" /><label for="categ-hira-4"> Comp. dak.</label>
+					<input type="checkbox" id="categ-hira-5" /><label for="categ-hira-5"> Comp. hand.</label>
+				</div>
+
+				Catégories disponibles pour les katakanas :
+				<div id="opt-categs-kata">
+					<input type="checkbox" id="categ-kata-0" /><label for="categ-kata-0"> Basiques</label>
+					<input type="checkbox" id="categ-kata-1" /><label for="categ-kata-1"> Dakutens</label>
+					<input type="checkbox" id="categ-kata-2" /><label for="categ-kata-2"> Handakutens</label><br/>
+					<input type="checkbox" id="categ-kata-3" /><label for="categ-kata-3"> Composés</label>
+					<input type="checkbox" id="categ-kata-4" /><label for="categ-kata-4"> Comp. dak.</label>
+					<input type="checkbox" id="categ-kata-5" /><label for="categ-kata-5"> Comp. hand.</label>
+				</div>
+			</div>
+
+			<br/>
+			Fonctionnement de la dictée :
+			<br/>
+			<input type="radio" name="type-duree" id="type-duree-random" checked onchange="document.getElementById('nombre-kanas').style.display='block';document.getElementById('nombre-passes').style.display='none';"/><label for="type-duree-random"> Tirages aléatoires</label>
+			<input type="radio" name="type-duree" id="type-duree-passes" onchange="document.getElementById('nombre-kanas').style.display='none';document.getElementById('nombre-passes').style.display='block';"/><label for="type-duree-passes"> Passes complètes</label>
+			<div id="nombre-kanas">
+				Nombre de kanas : <input type="number" min="1" max="1000" step="1" value="50" id="opt-nb-kanas"/>
+			</div>
+			<div id="nombre-passes" style="display:none">
+				Nombre de séries : <input type="number" min="1" max="10" step="1" value="2" id="opt-nb-passes"/>
+			</div>
+			<div>
+				Temps entre sons : <input type="number" min="500" max="10000" step="100" value="3500" id="opt-tps-entre" />
+			</div>
+		</section>
+		<section id="progres">Chargement...</section>
+	</article>
+</body>
+</html>
