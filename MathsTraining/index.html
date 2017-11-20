@@ -3,8 +3,59 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Entraînement mathématiques</title>
-	</head>
-	<body>
 
+		<script src="jsMath-3.6e/easy/load.js"></script>
+		<link rel="stylesheet" href="style.css" type="text/css">
+
+		<script src="builders.js"></script>
+		<script src="exercises.js"></script>
+	</head>
+	<body onload="init()">
+		<div id="exercises">
+			<table>
+				<thead>
+					<tr>
+						<th>Calculs</th>
+						<th>Équations</th>
+						<th>Inéquations</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ol id="exos-calcul">
+							</ol>
+						</td>
+						<td>
+							<ol id="exos-equations">
+							</ol>
+						</td>
+						<td>
+							<ol id="exos-inequations">
+							</ol>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="exercise" class="hidden">
+			<div id="calculus">
+				$$$$
+			</div>
+
+			<div class="button" onclick="nextQuestion()">Suivant</div>
+			<div class="button" onclick="stopExercise()">Arrêter</div>
+		</div>
+		<div id="chronos">
+			<h2>Chronos :</h2>
+			<ol id="chronos-list">
+				<li>1:10:12</li>
+				<li>2:10:12</li>
+				<li>3:10:12</li>
+				<li>4:10:12</li>
+			</ol>
+			<div id="total-chrono"></div>
+			<div id="current-chrono">0:00:00</div>
+		</div>
 	</body>
 </html>
