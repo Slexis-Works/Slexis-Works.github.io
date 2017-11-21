@@ -1,0 +1,123 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+html, body {
+	height: 100%;
+}
+
+/*
+ * Chronos
+ */
+#chronos {
+	box-sizing: border-box;
+	height: 100%;
+	padding: 15px;
+	float: left;
+	position: relative;
+	width: 300px;
+	border-right: 2px outset black;
+	box-shadow: 2px 0px 4px grey;
+	font-family: monospace;
+}
+
+#chronos-list li {
+	font-size: 16pt;
+}
+
+#total-chronos {
+	font-size: 18pt;
+}
+
+#current-chrono {
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
+	font-size: 20pt;
+}
+
+/*
+ * Deux panneaux principaux
+ */
+#exercises, #exercise {
+	position: absolute;
+	top: 0;
+
+	box-sizing: border-box;
+	height: 100%;
+	width: 100%;
+	padding: 50px 50px 50px 350px;
+
+	text-align: center;
+}
+
+/*
+ * Exercices
+ */
+#exercises {
+}
+
+#exercises table {
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+
+#exercises table td, #exercises table th {
+	padding: 10pt 20pt 10pt 30pt;
+	text-align: left;
+	font-size: 14pt;
+}
+
+#exercises table tr th {
+	font-size: 20pt;
+}
+
+#exercises table li {
+	cursor: pointer;
+}
+
+/*
+ * Calculs
+ */
+#exercise {
+	background-color: white;
+
+	border-bottom: 2px solid black;
+
+	font-size: 20pt;
+	overflow: hidden;
+
+	transition-property: height, padding;
+	transition-duration: 0.8s;
+	transition-timing-function: ease-in-out;
+}
+
+#exercise.hidden {
+	padding: 0 50px 0 350px;
+	height: 0%;
+}
+
+#exercise .button {
+	background-color: #227;
+
+	width: 60%;
+	height: 40pt;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	font-size: 20pt;
+	line-height: 40pt;
+	color: white;
+	margin: 10pt auto;
+	text-align: center;
+	border-radius: 10pt;
+	box-shadow: 1pt 3pt 0pt #114;
+}
+
+#exercise .button:hover {
+	box-shadow: inset 1pt 3pt 0pt #002;
+	top: 3px;
+	left: 1px;
+}
+
