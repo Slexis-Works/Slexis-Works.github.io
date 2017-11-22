@@ -42,8 +42,23 @@ var exercises = {
 			]
 		},
 		{
-			"title": "Multiplications"
-		},
+			"title": "Multiplications",
+			"builders": [
+				new MultiplicationB([
+					new ConstantIntB(1, 10),
+					new ConstantIntB(1, 10)
+				]),
+				new MultiplicationB([
+					new ConstantIntB(-1, 5),
+					new ConstantIntB(1, 15)
+				]),
+				new MultiplicationB([
+					new ConstantIntB(1, 4),
+					new ConstantIntB(1, 7),
+					new ConstantIntB(3, 5)
+				])
+			]
+		}/*,
 		{
 			"title": "Divisions"
 		},
@@ -58,7 +73,7 @@ var exercises = {
 		},
 		{
 			"title": "Trigonométrie"
-		},
+		},*/
 	],
 	"equations": [
 

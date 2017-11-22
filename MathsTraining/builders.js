@@ -184,3 +184,50 @@ TermsSumB.prototype.build = function() {
 	return new TermsSum(builds);
 }
 
+
+/*
+ * Multiplication
+ */
+function Multiplication(factors) {
+	this.factors = factors;
+}
+
+Multiplication.prototype.toTeX = function() {
+	var res = this.factors[0].toTeX();
+	if (this.factors[0].forceParenthesis()) {
+		res = "\\left(" + res + "\\right)";
+	}
+
+	for (var f = 1 ; f < this.factors.length ; ++f) {
+		var newFactor = this.factors[f].toTeX();
+		if (this.factors[f].forceParenthesis()) {
+			newFactor = "\\left(" + newFactor + "\\right)";
+		}
+		res += "\\times " + newFactor;
+	}
+	return res;
+}
+
+Multiplication.prototype.forceParenthesis = function() {
+	return false;
+}
+
+Multiplication.prototype.value = function() {
+	var product = 1;
+	for (var f = 0 ; f < this.factors.length ; ++f) {
+		product *= this.factors[f].value();
+	}
+	return product;
+}
+
+function MultiplicationB (terms) {
+	this.terms = terms;
+}
+
+MultiplicationB.prototype.build = function() {
+	var builds = [];
+	for (var b = 0 ; b < this.terms.length ; ++b) {
+		builds.push(this.terms[b].build());
+	}
+	return new Multiplication(builds);
+}
