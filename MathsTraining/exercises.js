@@ -6,7 +6,10 @@
  */
 var state = -1;
 
-var currentExercise;
+var curExercise, curEquation;
+var chronoTotal = new Date(0), chronoCur = new Date(0), lastDate;
+
+var hLastResult, hChronos, hTotalChrono, hCurChrono;
 
 var exercises = {
 	"calcul": [
@@ -84,6 +87,11 @@ function init() {
 		}
 	}
 
+	hLastResult = document.getElementById("last-result");
+	hChronos = document.getElementById("chronos-list");
+	hTotalChrono = document.getElementById("total-chrono").children[0];
+	hCurChrono = document.getElementById("current-chrono").children[0];
+
 	state = 0;
 }
 
@@ -94,7 +102,12 @@ function launchExercise(section, index) {
 	console.log("Launching: " + section + "[" + index + "]");
 	state = -1;
 
-	currentExercise = exercises[section][index];
+	curExercise = exercises[section][index];
+
+	var chronoTitle = document.createElement("li");
+	chronoTitle.className = "title";
+	chronoTitle.innerText = curExercise["title"];
+	hChronos.appendChild(chronoTitle);
 
 	document.getElementById("exercise").className = "";
 	document.getElementById("calculus").innerText = "Cliquez sur le bouton ci-dessous pour démarrer !";
@@ -106,24 +119,84 @@ function nextQuestion() {
 	if (state != 1)
 		return;
 
-	var chosenBuilder = Math.floor(Math.random() * currentExercise["builders"].length);
-	console.log(currentExercise["builders"][chosenBuilder]);
-	var built = currentExercise["builders"][chosenBuilder].build();
-	console.log(built);
-	var equTxt = built.toTeX();
-	console.log(equTxt);
+	showLastResult();
+
+	var chosenBuilder = Math.floor(Math.random() * curExercise["builders"].length);
+	curEquation = curExercise["builders"][chosenBuilder].build();
+	var equTxt = curEquation.toTeX();
 
 	var equTag = document.getElementById("calculus");
 	equTag.innerText = "$$" + equTxt + "$$";
 	jsMath.ConvertTeX(equTag);
 	jsMath.ProcessBeforeShowing(equTag);
+
+	if (lastDate) {
+		var chronoQuestion = document.createElement("li");
+		chronoQuestion.className = "time";
+		chronoQuestion.innerText = formatDate(chronoCur);
+		hChronos.appendChild(chronoQuestion);
+		chronoCur.setTime(0);
+	}
+
+	lastDate = new Date();
+	chronoHandling();
 }
 
 function stopExercise() {
 	if (state != 1)
 		return;
-	
+
+	showLastResult();
+
 	state = -1;
+	lastDate = null;
+	chronoCur.setTime(0);
+
 	document.getElementById("exercise").className = "hidden";
 
+}
+
+function showLastResult() {
+	if (curEquation) {
+		hLastResult.innerText = "$$" + curEquation.value() + "$$";
+		jsMath.ConvertTeX(hLastResult);
+		jsMath.ProcessBeforeShowing(hLastResult);
+	}
+}
+
+function chronoHandling() {
+	var newDate = new Date();
+	if (lastDate) {
+		var dateDifference = newDate.getTime() - lastDate.getTime();
+		lastDate = newDate;
+
+		chronoTotal.setTime(chronoTotal.getTime() + dateDifference);
+		chronoCur.setTime(chronoCur.getTime() + dateDifference);
+
+		hTotalChrono.innerText = formatDate(chronoTotal);
+		hCurChrono.innerText = formatDate(chronoCur);
+
+		if (state == 1) {
+			window.requestAnimationFrame(chronoHandling);
+		}
+	} else if (state == 1) {
+		newDate = newDate;
+		window.requestAnimationFrame(chronoHandling);
+	}
+}
+
+function formatDate(date) {
+	var res = date.getMinutes() + ":";
+	var seconds = date.getSeconds();
+	if (seconds < 10) {
+		res += "0";
+	}
+	res += seconds + ":";
+	var centiseconds = date.getMilliseconds();
+	centiseconds = Math.floor(centiseconds / 10);
+	if (centiseconds < 10) {
+		res += "0";
+	}
+	res += centiseconds;
+	return res;
 }

@@ -19,22 +19,51 @@ html, body {
 	width: 300px;
 	border-right: 2px outset black;
 	box-shadow: 2px 0px 4px grey;
+
+	display: flex;
+	flex-flow: column;
+}
+
+#chronos > div {
+	flex: 0 1 auto;
+}
+
+#chronos-list {
+	overflow: auto;
+	flex: 1 1 auto;
+
+	margin: 4pt 0;
+	padding: 2pt;
+
+	box-shadow: 0px 0px 4px 4px #EEE;
+	background-color: #EEE;
+}
+
+#chronos-list li.title {
+	font-size: 16pt;
+	font-weight: bold;
+}
+
+#chronos-list li.time {
+	font-size: 16pt;
 	font-family: monospace;
 }
 
-#chronos-list li {
-	font-size: 16pt;
-}
-
-#total-chronos {
+#total-chrono {
 	font-size: 18pt;
 }
 
 #current-chrono {
-	position: absolute;
-	bottom: 15px;
-	right: 15px;
 	font-size: 20pt;
+}
+
+#chronos > div span {
+	font-family: monospace;
+}
+
+#last-result {
+	font-size: 20pt;
+	font-family: sans-serif;
 }
 
 /*
@@ -55,9 +84,6 @@ html, body {
 /*
  * Exercices
  */
-#exercises {
-}
-
 #exercises table {
 	border-collapse: collapse;
 	margin: 0 auto;
