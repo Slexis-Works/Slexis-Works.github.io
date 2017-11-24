@@ -62,7 +62,15 @@ var exercises = {
 		{
 			"title": "Divisions",
 			"builders": [
-				new DivisionB(new ConstantIntB(-20, 20), new ConstantIntB(1, 5))
+				new DivisionB(new ConstantIntB(-20, 20), new ConstantIntB(1, 5)),
+				new DivisionB(
+					new Addition2B(new ConstantIntB(-15, 10), new ConstantIntB(-10, 15)),
+					new ConstantIntB(1, 5)
+				),
+				new DivisionB(
+					new MultiplicationB([new ConstantIntB(-5, 5), new ConstantIntB(-4, 4)]),
+					new ConstantIntB(1, 5)
+				)
 			]
 		}/*,
 		{
