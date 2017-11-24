@@ -58,10 +58,13 @@ var exercises = {
 					new ConstantIntB(3, 5)
 				])
 			]
-		}/*,
-		{
-			"title": "Divisions"
 		},
+		{
+			"title": "Divisions",
+			"builders": [
+				new DivisionB(new ConstantIntB(-20, 20), new ConstantIntB(1, 5))
+			]
+		}/*,
 		{
 			"title": "Carrés"
 		},

@@ -231,3 +231,60 @@ MultiplicationB.prototype.build = function() {
 	}
 	return new Multiplication(builds);
 }
+
+/*
+ * Division
+ */
+function Division(num, den) {
+	this.num = num;
+	this.den = den;
+}
+
+Division.prototype.toTeX = function() {
+	return "\\frac{" + this.num.toTeX() + "}{" + this.den.toTeX() + "}";
+}
+
+Division.prototype.forceParenthesis = function() {
+	return false;
+}
+
+Division.prototype.value = function() {
+	var numV = this.num.value();
+	var denV = this.den.value();
+
+	var div = this.num.value() / this.den.value();
+
+	// Maximum 10 numbers after comma
+	return Math.round(div * Math.pow(10, 10))/Math.pow(10, 10);
+
+
+}
+
+Division.prototype.simplify = function() {
+	var numV = this.num.value();
+	var denV = this.den.value();
+
+	// Make the fraction smaller
+	var gcd = GCD(numV, denV);
+	numV /= gcd;
+	denV /= gcd;
+
+	if (denV == 1) {
+		return new ConstantInt(numV);
+	}
+
+	if (denV == -1) {
+		return new ConstantInt(-numV);
+	}
+
+	return new Division(numV, denV);
+}
+
+function DivisionB(num, den) {
+	this.num = num;
+	this.den = den;
+}
+
+DivisionB.prototype.build = function() {
+	return new Division(this.num.build(), this.den.build());
+}
