@@ -72,10 +72,14 @@ var exercises = {
 					new ConstantIntB(1, 5)
 				)
 			]
-		}/*,
-		{
-			"title": "Carrés"
 		},
+		{
+			"title": "Carrés",
+			"builders": [
+				new SquareB(new ConstantIntB(1, 15)),
+				new SquareB(new Addition2B(new ConstantIntB(1, 8), new ConstantIntB(1, 8)))
+			]
+		}/*,
 		{
 			"title": "Racines"
 		},

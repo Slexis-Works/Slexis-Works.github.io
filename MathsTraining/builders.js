@@ -1,15 +1,12 @@
-/*
- * Me faudrait un moyen de pouvoir instancier une première fois dans "builders" avec des bornes et autres configurations, puis de pouvoir être instancié avec une vraie valeur.
- * Peut-être des classes suffixées par le B de builder
- * Peut-être stocker un tableau de configuration puis sortir un truc aléatoire lors de l'appel à toTeX mais du coup on oubliera ce que l'on a eu
- */
 
 /*
  * Constants
+ * Priority: 5
  */
 
 function Constant(c) {
 	this.c = c;
+	this.priority = 5;
 }
 
 Constant.prototype.toTeX = function () {
@@ -35,6 +32,7 @@ ConstantIntB.prototype.build = function () {
 
 /*
  * Basic Addition
+ * Priority: 1
  */
 
 function Addition(terms, hasParenthesis) {
@@ -42,6 +40,7 @@ function Addition(terms, hasParenthesis) {
 	this.terms = terms;
 	// Add useless parenthesis to disturb
 	this.hasParenthesis = hasParenthesis;
+	this.priority = 1;
 }
 
 Addition.prototype.toTeX = function () {
@@ -51,7 +50,7 @@ Addition.prototype.toTeX = function () {
 		var newTermTeX = this.terms[term].toTeX();
 		console.log("term: " + term + " out of " + this.terms.length);
 		console.log(this.terms[term]);
-		if (this.terms[term].forceParenthesis()) {
+		if (this.terms[term].forceParenthesis(this.priority)) {
 			newTermTeX = "\\left(" + newTermTeX + "\\right)";
 		}
 		result += " + " + newTermTeX;
@@ -106,6 +105,7 @@ Addition2B.prototype.build = function () {
 
 /*
  * Advanced sum
+ * Priority: 1
  */
 
 /**3dd
@@ -116,13 +116,14 @@ Addition2B.prototype.build = function () {
  */
 function TermsSum (terms) {
 	this.terms = terms;
+	this.priority = 1;
 }
 
 TermsSum.prototype.toTeX = function() {
 	var result = this.terms[0]["term"].toTeX();
 
 	if (!this.terms[0]["sign"]) {
-		if (this.terms[0]["term"].forceParenthesis()) {
+		if (this.terms[0]["term"].forceParenthesis(this.priority)) {
 			result = "\\left(" + result + "\\right)";
 		}
 		result = " - " + result;
@@ -130,7 +131,7 @@ TermsSum.prototype.toTeX = function() {
 
 	for (var term = 1 ; term < this.terms.length ; ++term) {
 		var newTermTeX = this.terms[term]["term"].toTeX();
-		if (this.terms[term]["term"].forceParenthesis()) {
+		if (this.terms[term]["term"].forceParenthesis(this.priority)) {
 			newTermTeX = "\\left(" + newTermTeX + "\\right)";
 		}
 		if (this.terms[term]["sign"]) {
@@ -187,20 +188,22 @@ TermsSumB.prototype.build = function() {
 
 /*
  * Multiplication
+ * Priority: 2
  */
 function Multiplication(factors) {
 	this.factors = factors;
+	this.priority = 2;
 }
 
 Multiplication.prototype.toTeX = function() {
 	var res = this.factors[0].toTeX();
-	if (this.factors[0].forceParenthesis()) {
+	if (this.factors[0].forceParenthesis(this.priority)) {
 		res = "\\left(" + res + "\\right)";
 	}
 
 	for (var f = 1 ; f < this.factors.length ; ++f) {
 		var newFactor = this.factors[f].toTeX();
-		if (this.factors[f].forceParenthesis()) {
+		if (this.factors[f].forceParenthesis(this.priority)) {
 			newFactor = "\\left(" + newFactor + "\\right)";
 		}
 		res += "\\times " + newFactor;
@@ -208,8 +211,8 @@ Multiplication.prototype.toTeX = function() {
 	return res;
 }
 
-Multiplication.prototype.forceParenthesis = function() {
-	return false;
+Multiplication.prototype.forceParenthesis = function(parentPriority) {
+	return parentPriority > 2;
 }
 
 Multiplication.prototype.value = function() {
@@ -234,10 +237,12 @@ MultiplicationB.prototype.build = function() {
 
 /*
  * Division
+ * Priority: 2
  */
 function Division(num, den) {
 	this.num = num;
 	this.den = den;
+	this.priority = 2;
 }
 
 Division.prototype.toTeX = function() {
@@ -288,3 +293,41 @@ function DivisionB(num, den) {
 DivisionB.prototype.build = function() {
 	return new Division(this.num.build(), this.den.build());
 }
+
+/*
+ * Exponentiations
+ * Priority: 3
+ */
+
+function Power(base, exp) {
+	this.base = base;
+	this.exp = exp;
+	this.priority = 3;
+}
+
+Power.prototype.toTeX = function() {
+	var res = this.base.toTeX();
+
+	if (this.base.forceParenthesis(this.priority)) {
+		res = "\\left(" + res + "\\right)";
+	}
+	res += "^{" + this.exp.toTeX() + "}";
+	return res;
+}
+
+Power.prototype.value = function() {
+	return Math.pow(this.base.value(), this.exp.value());
+}
+
+Power.prototype.forceParenthesis = function (parentPriority) {
+	return parentPriority > this.parentPriority;
+}
+
+function SquareB(base) {
+	this.base = base;
+}
+
+SquareB.prototype.build = function() {
+	return new Power(this.base.build(), new Constant(2));
+}
+
