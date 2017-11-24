@@ -1,3 +1,11 @@
+/**
+ * Priorities of operators:
+ * 1: additions, subtractions
+ * 2: products, divisions
+ * 3: exponentiation
+ * 4: self-delimited operators (roots, functions)
+ * 5: constants limited to themselves
+ */
 
 /*
  * Constants
@@ -329,5 +337,14 @@ function SquareB(base) {
 
 SquareB.prototype.build = function() {
 	return new Power(this.base.build(), new Constant(2));
+}
+
+function PowerB(base, exp) {
+	this.base = base;
+	this.exp = exp;
+}
+
+PowerB.prototype.build = function() {
+	return new Power(this.base.build(), this.exp.build());
 }
 
