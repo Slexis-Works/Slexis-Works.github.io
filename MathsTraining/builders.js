@@ -8,19 +8,19 @@
  * Constants
  */
 
-function ConstantInt(c) {
+function Constant(c) {
 	this.c = c;
 }
 
-ConstantInt.prototype.toTeX = function () {
+Constant.prototype.toTeX = function () {
 	return this.c;
 };
 
-ConstantInt.prototype.forceParenthesis = function () {
+Constant.prototype.forceParenthesis = function () {
 	return this.c < 0;
 }
 
-ConstantInt.prototype.value = function () {
+Constant.prototype.value = function () {
 	return this.c;
 }
 
@@ -30,7 +30,7 @@ function ConstantIntB(min, max) {
 }
 
 ConstantIntB.prototype.build = function () {
-	return new ConstantInt(Math.floor(Math.random() * (this.max - this.min + 1) + this.min));
+	return new Constant(Math.floor(Math.random() * (this.max - this.min + 1) + this.min));
 };
 
 /*
