@@ -38,6 +38,16 @@ ConstantIntB.prototype.build = function () {
 	return new Constant(Math.floor(Math.random() * (this.max - this.min + 1) + this.min));
 };
 
+function PerfectSquareB(min, max) {
+	this.min = min;
+	this.max = max;
+}
+
+PerfectSquareB.prototype.build = function() {
+	var ps = Math.floor(Math.random() * (this.max - this.min + 1) + this.min);
+	return new Constant(ps * ps);
+}
+
 /*
  * Basic Addition
  * Priority: 1
@@ -346,5 +356,49 @@ function PowerB(base, exp) {
 
 PowerB.prototype.build = function() {
 	return new Power(this.base.build(), this.exp.build());
+}
+
+/*
+ * Roots
+ */
+
+// Awful argument names from https://en.wikipedia.org/wiki/Nth_root
+function Root(index, radicand) {
+	this.index = index;
+	this.radicand = radicand;
+	this.priority = 4;
+}
+
+Root.prototype.toTeX = function() {
+	var indexStr = "";
+	var indexTeX = this.index.toTeX();
+	if (indexTeX != "2") {
+		indexStr = "[" + indexTeX + "]";
+	}
+	return "\\sqrt" + indexStr + "{" + this.radicand.toTeX() + "}";
+}
+
+Root.prototype.value = function() {
+	return Math.pow(this.radicand.value(), 1/this.index.value());
+}
+
+Root.prototype.forceParenthesis = function() {
+	return false;
+}
+
+function SquareRootB(radicand) {
+	this.radicand = radicand;
+}
+
+SquareRootB.prototype.build = function() {
+	return new Root(new Constant(2), this.radicand.build());
+}
+
+function CubeRootB(radicand) {
+	this.radicand = radicand;
+}
+
+CubeRootB.prototype.build = function() {
+	return new Root(new ConstantInt(3), this.radicand.build());
 }
 

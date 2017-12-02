@@ -79,10 +79,13 @@ var exercises = {
 				new SquareB(new ConstantIntB(1, 15)),
 				new SquareB(new Addition2B(new ConstantIntB(1, 8), new ConstantIntB(1, 8)))
 			]
-		}/*,
-		{
-			"title": "Racines"
 		},
+		{
+			"title": "Racines",
+			"builders": [
+				new SquareRootB(new PerfectSquareB(0, 15))
+			]
+		}/*,
 		{
 			"title": "Logarithmes"
 		},
