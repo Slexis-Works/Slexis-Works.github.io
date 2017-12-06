@@ -85,10 +85,15 @@ var exercises = {
 			"builders": [
 				new SquareRootB(new PerfectSquareB(0, 15))
 			]
-		}/*,
-		{
-			"title": "Logarithmes"
 		},
+		{
+			"title": "Logarithmes",
+			"builders": [
+				new Log10B(new PowOf10B(-7, 7)),
+				new Log10B(new PowerB(new ConstantB(10), new ConstantIntB(-14, 14))),
+				new LogNep(new PowerB(C_E, new ConstantIntB(-14, 14)))
+			]
+		}/*,
 		{
 			"title": "Trigonométrie"
 		},*/
@@ -191,7 +196,9 @@ function stopExercise() {
 
 function showLastResult() {
 	if (curEquation) {
-		hLastResult.innerText = "$$" + curEquation.value() + "$$";
+		var result = curEquation.value();
+		result = Math.round(result * 100000) / 100000;
+		hLastResult.innerText = "$$" + result + "$$";
 		jsMath.ConvertTeX(hLastResult);
 		jsMath.ProcessBeforeShowing(hLastResult);
 	}

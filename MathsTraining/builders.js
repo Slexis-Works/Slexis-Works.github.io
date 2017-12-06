@@ -12,13 +12,14 @@
  * Priority: 5
  */
 
-function Constant(c) {
+function Constant(c, render) {
 	this.c = c;
+	this.render = render;
 	this.priority = 5;
 }
 
 Constant.prototype.toTeX = function () {
-	return this.c;
+	return this.render || this.c;
 };
 
 Constant.prototype.forceParenthesis = function () {
@@ -27,6 +28,15 @@ Constant.prototype.forceParenthesis = function () {
 
 Constant.prototype.value = function () {
 	return this.c;
+}
+
+function ConstantB(c, render) {
+	this.c = c;
+	this.render = render;
+}
+
+ConstantB.prototype.build = function() {
+	return new Constant(this.c, this.render);
 }
 
 function ConstantIntB(min, max) {
@@ -47,6 +57,16 @@ PerfectSquareB.prototype.build = function() {
 	var ps = Math.floor(Math.random() * (this.max - this.min + 1) + this.min);
 	return new Constant(ps * ps);
 }
+
+function PowOf10B(minPow, maxPow) {
+	this.exp = new ConstantIntB(minPow, maxPow);
+}
+
+PowOf10B.prototype.build = function() {
+	return new Constant(Math.pow(10, this.exp.build().value()));
+}
+
+var C_E = new ConstantB(Math.E, "e");
 
 /*
  * Basic Addition
@@ -293,11 +313,11 @@ Division.prototype.simplify = function() {
 	denV /= gcd;
 
 	if (denV == 1) {
-		return new ConstantInt(numV);
+		return new Constant(numV);
 	}
 
 	if (denV == -1) {
-		return new ConstantInt(-numV);
+		return new Constant(-numV);
 	}
 
 	return new Division(numV, denV);
@@ -399,6 +419,57 @@ function CubeRootB(radicand) {
 }
 
 CubeRootB.prototype.build = function() {
-	return new Root(new ConstantInt(3), this.radicand.build());
+	return new Root(new Constant(3), this.radicand.build());
 }
+
+/*
+ * Logarithm
+ */
+
+function Logarithm(base, op) {
+	this.base = base;
+	this.op = op;
+	this.priority = 4;
+}
+
+Logarithm.prototype.toTeX = function() {
+	var opTeX = this.op.toTeX();
+	if (this.op.forceParenthesis(4)) {
+		opTeX = "\\left(" + opTeX + "\\right)";
+	}
+	var logTeX = "";
+	if (this.base instanceof Constant) {
+		if (this.base.c == Math.E) {
+			logTeX = "\\ln ";
+		} else if (this.base.c == 10) {
+			logTeX = "\\log ";
+		}
+	}
+	if (logTeX == "") {
+		logTeX = "\\log_{" + this.base.toTeX() + "}";
+	}
+	return logTeX + opTeX;
+}
+
+Logarithm.prototype.value = function() {
+	return Math.log(this.op.value()) / Math.log(this.base.value());
+}
+
+function Log10B(op) {
+	this.op = op;
+}
+
+Log10B.prototype.build = function() {
+	console.log(this.op);
+	return new Logarithm(new Constant(10), this.op.build());
+}
+
+function LogNep(op) {
+	this.op = op;
+}
+
+LogNep.prototype.build = function() {
+	return new Logarithm(C_E.build(), this.op.build());
+}
+
 
